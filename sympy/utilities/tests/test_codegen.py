@@ -529,12 +529,15 @@ def test_multidim_c_argument_cse():
     code = get_string(cgen.dump_c, [r], prefix="test")
     expected = (
         '#include "test.h"\n'
-        "#include <math.h>\n"
-        "void c(double *A, double *b, double *out) {\n"
-        "   out[0] = A[0]*b[0] + A[1]*b[1] + A[2]*b[2];\n"
-        "   out[1] = A[3]*b[0] + A[4]*b[1] + A[5]*b[2];\n"
-        "   out[2] = A[6]*b[0] + A[7]*b[1] + A[8]*b[2];\n"
-        "}\n"
+        '#include <math.h>\n'
+        'void c(double *A, double *b, double *out) {\n'
+        '   const double x0 = b[0];\n'
+        '   const double x1 = b[1];\n'
+        '   const double x2 = b[2];\n'
+        '   out[0] = x0*A[0] + x1*A[1] + x2*A[2];\n'
+        '   out[1] = x0*A[3] + x1*A[4] + x2*A[5];\n'
+        '   out[2] = x0*A[6] + x1*A[7] + x2*A[8];\n'
+        '}\n'
     )
     assert code == expected
 
